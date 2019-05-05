@@ -7,6 +7,12 @@ import random
 from packet import Packet
 from security import AESCipher
 
+"""
+packet.py
+Author: Alex Basagoitia & Matt Houston
+Date: 05/05/2019
+Description: Defines fabricated ICMP packets.
+"""
 
 def create_socket():
     try:
