@@ -3,6 +3,14 @@ import hashlib
 from Crypto import Random
 from Crypto.Cipher import AES
 
+"""
+security.py
+Author: Alex Basagoitia & Matt Houston
+Date: 05/05/2019
+Description: Provides AES encryption for the
+data portion of ICMP packets.
+"""
+
 class AESCipher(object):
 
     def __init__(self, key): 

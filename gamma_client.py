@@ -8,10 +8,19 @@ from packet import Packet
 from security import AESCipher
 
 """
-packet.py
+gamma_client.py
 Author: Alex Basagoitia & Matt Houston
 Date: 05/05/2019
-Description: Defines fabricated ICMP packets.
+Description: ICMP packet generator/reader
+
+README: This file provides both the sending
+and receiving capabilities for ping packets.
+Two-way communication through the use of fabricated
+ping packets is possible with this file; therefore,
+we decided not to create a separate server file
+that would perform this file's operations instead.
+
+Dependencies: packet.py, security.py
 """
 
 def create_socket():

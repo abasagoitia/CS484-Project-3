@@ -6,6 +6,12 @@ import random
 import select
 import sys
 
+"""
+packet.py
+Author: Alex Basagoitia & Matt Houston
+Date: 05/05/2019
+Description: Defines fabricated ICMP packets.
+"""
 
 class Packet:
     def __init__(self, p_type, ident, seq, data):
