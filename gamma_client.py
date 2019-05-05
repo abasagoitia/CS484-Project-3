@@ -3,7 +3,9 @@ from socket import *
 import threading
 import sys
 import struct
+import random
 from packet import Packet
+from security import AESCipher
 
 
 def create_socket():
@@ -32,13 +34,15 @@ def split(message):
     return split_message
 
 
-def send_msg(addr, conn_socket):
+def send_msg(addr, conn_socket, cipher):
     while True:
-        msg = input()
+        msg = input("Type your message: \n")
+        enc_msg = cipher.encrypt(msg)
+
         if (msg == "<file>"):
             send_file(addr, conn_socket)
         else:
-            create_packet = Packet(8, 1, 1, msg)
+            create_packet = Packet(8, 1, 1, str(enc_msg))
             complete_packet = create_packet.parse_packet()
 
             while (complete_packet):
@@ -46,31 +50,35 @@ def send_msg(addr, conn_socket):
                 complete_packet = complete_packet[sent:]
 
 
-def get_msg(addr, conn_socket):
+def get_msg(addr, conn_socket, cipher):
     while True:
-        #print("Waiting for reply: ")
         recv_packet, recv_addr = conn_socket.recvfrom(1024)
-        #print("Got Reply")
-        print(recv_packet)
         header = recv_packet[20:28]
         ptype, code, checksum, pid, seq = struct.unpack('bbHHh', header)
 
-        print(addr)
-        print(gethostbyname(addr))
-        print(recv_addr[0])
-        print(f"{ptype}, {code}, {pid}")
-        if (pid == 256):
-            print(f"Reply: {recv_packet[28:].decode()}")
+        if (ptype == 0):
+            enc_msg = recv_packet[28:].decode()
+            enc_msg = bytes(enc_msg[1:], 'utf-8')
+            msg = cipher.decrypt(enc_msg)
+            print(f"Reply: {msg}")
+        # else:
+        #     enc_msg = recv_packet[28:].decode()
+        #     enc_msg = bytes(enc_msg[1:], 'utf-8')
+        #     msg = cipher.decrypt(enc_msg)
+        #     print(f"Reply: {msg}")
 
 
 def main():
     conn_addr = input("Connection Address: ")
     conn_socket = create_socket()
 
+    key = '0183562984029658'
+    cipher = AESCipher(key)    
+
     send_worker_thread = threading.Thread(
-        target=send_msg, args=(conn_addr, conn_socket))
+        target=send_msg, args=(conn_addr, conn_socket, cipher))
     recv_worker_thread = threading.Thread(
-        target=get_msg, args=(conn_addr, conn_socket))
+        target=get_msg, args=(conn_addr, conn_socket, cipher))
 
     send_worker_thread.start()
     recv_worker_thread.start()
@@ -78,3 +86,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#https://www.novixys.com/blog/using-aes-encryption-decryption-python-pycrpto/
