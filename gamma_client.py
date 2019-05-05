@@ -56,7 +56,7 @@ def get_msg(addr, conn_socket, cipher):
         header = recv_packet[20:28]
         ptype, code, checksum, pid, seq = struct.unpack('bbHHh', header)
 
-        if (ptype == 0):
+        if (addr == recv_addr[0]):
             enc_msg = recv_packet[28:].decode()
             enc_msg = bytes(enc_msg[1:], 'utf-8')
             msg = cipher.decrypt(enc_msg)
