@@ -34,7 +34,7 @@ def split(message):
 
 def send_msg(addr, conn_socket):
     while True:
-        msg = input("Type your message: ")
+        msg = input()
         if (msg == "<file>"):
             send_file(addr, conn_socket)
         else:
@@ -48,11 +48,18 @@ def send_msg(addr, conn_socket):
 
 def get_msg(addr, conn_socket):
     while True:
+        #print("Waiting for reply: ")
         recv_packet, recv_addr = conn_socket.recvfrom(1024)
+        #print("Got Reply")
+        print(recv_packet)
         header = recv_packet[20:28]
         ptype, code, checksum, pid, seq = struct.unpack('bbHHh', header)
 
-        if (gethostbyname(addr) == recv_addr[0] and ptype != 0):
+        print(addr)
+        print(gethostbyname(addr))
+        print(recv_addr[0])
+        print(f"{ptype}, {code}, {pid}")
+        if (pid == 256):
             print(f"Reply: {recv_packet[28:].decode()}")
 
 
