@@ -23,8 +23,10 @@ that would perform this file's operations instead.
 Dependencies: packet.py, security.py
 """
 
+
 def create_socket():
     try:
+        # https://docs.python.org/3/library/socket.html
         new_socket = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)
         new_socket.bind(("", 4000))
         return new_socket
@@ -88,7 +90,7 @@ def main():
     conn_socket = create_socket()
 
     key = '0183562984029658'
-    cipher = AESCipher(key)    
+    cipher = AESCipher(key)
 
     send_worker_thread = threading.Thread(
         target=send_msg, args=(conn_addr, conn_socket, cipher))
@@ -102,4 +104,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#https://www.novixys.com/blog/using-aes-encryption-decryption-python-pycrpto/
+# https://www.novixys.com/blog/using-aes-encryption-decryption-python-pycrpto/
